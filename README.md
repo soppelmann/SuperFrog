@@ -73,3 +73,7 @@ All you need to do is provide a thin C++ wrapper that calls these classes to per
 [Connecting to Verilated Models](https://verilator.org/guide/latest/connecting.html)
 
 [Verilog Coding Style Guide](https://github.com/lowRISC/style-guides/blob/master/VerilogCodingStyle.md)
+
+### Todo
+
+- Add game of life project
