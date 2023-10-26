@@ -32,7 +32,7 @@ Directory structure below.
         └── top_vga.sv
 ```
 
-Just run make all in the Verilator directory.
+Just run `make all` in the Verilator directory.
 Binary need to be run from the Verilator directory due to static paths.
 
 ```shell
