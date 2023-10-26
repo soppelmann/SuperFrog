@@ -15,10 +15,6 @@
     output      logic de,       // data enable (low in blanking interval)
     output      logic frame,    // high at start of frame
     output      logic line    // high at start of line
-    //output      logic [7:0] sdl_r,  // 8-bit red
-    //output      logic [7:0] sdl_g,  // 8-bit green
-    //output      logic [7:0] sdl_b   // 8-bit blue
-    //output reg [11:0] io_rgb_color
    );
 
    localparam COLOR_BLUE = 12'hf00;
@@ -146,7 +142,6 @@
            is_displaying_pixels = 1;
         end
      end
-
 
 
 

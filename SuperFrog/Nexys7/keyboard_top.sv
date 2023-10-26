@@ -68,8 +68,8 @@ module keyboard_top(
 //        .cat_out(seven_segment_number),
 //        .an_out(seven_segment_enable)
 //    );
-    
-    top_hedgehog int_vgafun(
+
+    top_game int_game(
 //     Inputs
     .clk_100m(clk),
     .btn_rst_n(reset_n),

@@ -20,7 +20,6 @@ module top_superfrog (
     `include "top_header.vh"
 
     // display sync signals and coordinates
-
     logic signed [CORDW-1:0] sx, sy;
     logic de, frame, line;
 
