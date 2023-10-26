@@ -19,13 +19,13 @@ module top_superfrog (
     // Header file with our localparams
     `include "top_header.vh"
 
-
     // display sync signals and coordinates
 
     logic signed [CORDW-1:0] sx, sy;
     logic de, frame, line;
 
-    display_480p #(.CORDW(CORDW)) display_inst (
+   // Small glitches at edge of display, use display_480p to avoid glitches :)
+    simple_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
         .sx,
