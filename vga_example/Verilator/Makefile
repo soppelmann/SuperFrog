@@ -8,7 +8,7 @@ LIBS += -I../Nexys7
 vga: vga.exe
 
 %.exe: %.mk
-	make -C ./obj_dir -f Vtop_$<
+	make -C ./sim -f Vtop_$<
 
 %.mk: top_%.sv
 	verilator ${VFLAGS} -I.. ${LIBS} \
@@ -18,6 +18,6 @@ vga: vga.exe
 all: vga
 
 clean:
-	rm -rf ./obj_dir
+	rm -rf ./sim
 
 .PHONY: all clean
