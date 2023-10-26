@@ -13,7 +13,8 @@ vga: vga.exe
 %.mk: top_%.sv
 	verilator ${VFLAGS} -I.. ${LIBS} \
 	    -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
-		-CFLAGS "${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
+		-CFLAGS "${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}" \
+		--Mdir "./sim"
 
 all: vga
 
