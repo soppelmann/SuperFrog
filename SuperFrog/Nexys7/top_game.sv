@@ -54,7 +54,6 @@ module top_superfrog (
     );
 
     // Setup LFSR (Linear-Feedback Shift Register)
-    // figure out how to make use of this
 //    reg [7:0] sreg;
 //    always_ff @(posedge clk_pix) begin
 //    if (btn_up) sreg <= {1'b0, sreg[7:1]} ^ (sreg[0] ? 8'b10111000 : 8'b0);

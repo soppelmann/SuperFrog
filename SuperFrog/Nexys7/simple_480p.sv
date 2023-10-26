@@ -41,14 +41,14 @@
    reg [CORDW-1:0] horizontal_counter_reg, horizontal_counter_next;
    reg [CORDW-1:0] vertical_counter_reg, vertical_counter_next;
 
-   reg        h_sync_reg, h_sync_next;
-   reg        v_sync_reg, v_sync_next;
+   reg             h_sync_reg, h_sync_next;
+   reg             v_sync_reg, v_sync_next;
 
-   reg        is_displaying_pixels;
+   reg             is_displaying_pixels;
 
    // Lazy fix
-   reg        r_frame;
-   reg        r_line;
+   reg             r_frame;
+   reg             r_line;
 
 
    always @ (posedge clk_pix)
