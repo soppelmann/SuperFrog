@@ -1,4 +1,3 @@
-
 `timescale 1ns / 1ps
 
 // Generates 25.2 MHz (640x480 60 Hz) with 100 MHz input clock

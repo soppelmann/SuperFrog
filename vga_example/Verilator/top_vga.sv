@@ -46,6 +46,7 @@ module vga(
    reg        v_sync_reg, v_sync_next;
 
    reg        is_displaying_pixels;
+   reg       frame;
 
 
    always @ (posedge clk_pix)
@@ -68,8 +69,16 @@ module vga(
      begin
         horizontal_counter_next = horizontal_counter_reg;
         vertical_counter_next = vertical_counter_reg;
+        frame = 0;
 
         if (clk_pix) begin
+           if (horizontal_counter_reg == 0 && vertical_counter_reg == 0) begin
+              frame = 1;
+           end
+           else begin
+              frame = 0;
+           end
+
            if (horizontal_counter_reg == NUM_HORIZONTAL_ALL_PIXELS-1) begin
               horizontal_counter_next = 0;
            end
@@ -156,7 +165,7 @@ module vga(
 
 
    // Need to edit above code to differ from frame and display enable
-   sdl_frame <= is_displaying_pixels;
+   sdl_frame <= frame;
    sdl_de <= is_displaying_pixels;
 
    sdl_b <= {2{io_rgb_color[11:8]}};
