@@ -1,9 +1,11 @@
+// (C)2023 Will Green, open source hardware released under the MIT License
+// Learn more at https://projectf.io/posts/hardware-sprites/
 
 `timescale 1ns / 1ps
 
 module bram_sdp #(
-    parameter WIDTH=8, 
-    parameter DEPTH=256, 
+    parameter WIDTH=8,
+    parameter DEPTH=256,
     parameter INIT_F="",
     localparam ADDRW=$clog2(DEPTH)
     ) (

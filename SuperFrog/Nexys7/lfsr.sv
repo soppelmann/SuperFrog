@@ -1,4 +1,3 @@
-
 `timescale 1ns / 1ps
 
 // NB. Ensure reset is asserted for one or more cycles before enable

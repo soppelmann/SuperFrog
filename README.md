@@ -71,3 +71,5 @@ All you need to do is provide a thin C++ wrapper that calls these classes to per
 [VGA controller simulation with verilator](https://ktln2.org/2020/05/24/vga-controller-simulation/)
 
 [Connecting to Verilated Models](https://verilator.org/guide/latest/connecting.html)
+
+[Verilog Coding Style Guide](https://github.com/lowRISC/style-guides/blob/master/VerilogCodingStyle.md)
