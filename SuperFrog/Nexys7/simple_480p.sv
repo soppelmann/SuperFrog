@@ -1,21 +1,20 @@
 `timescale 1ns / 1ps
 
-
-  module simple_480p #(
-    CORDW=16, // signed coordinate width (bits)
-    H_RES=640,   // horizontal resolution (pixels)
-    V_RES=480   // vertical resolution (lines)
-) (
-    input wire logic clk_pix,
-    input wire logic rst_pix,
-    output logic hsync,
-    output logic vsync,
-    output      logic signed [CORDW-1:0] sx,  // horizontal SDL position
-    output      logic signed [CORDW-1:0] sy,  // vertical SDL position
-    output      logic de,       // data enable (low in blanking interval)
-    output      logic frame,    // high at start of frame
-    output      logic line    // high at start of line
-   );
+module simple_480p #(
+                     CORDW=16, // signed coordinate width (bits)
+                     H_RES=640,   // horizontal resolution (pixels)
+                     V_RES=480   // vertical resolution (lines)
+                     ) (
+                        input logic                     clk_pix,
+                        input logic                     rst_pix,
+                        output logic                    hsync,
+                        output logic                    vsync,
+                        output logic signed [CORDW-1:0] sx,    // horizontal SDL position
+                        output logic signed [CORDW-1:0] sy,    // vertical SDL position
+                        output logic                    de,    // data enable (low in blanking interval)
+                        output logic                    frame, // high at start of frame
+                        output logic                    line   // high at start of line
+                        );
 
    localparam COLOR_BLUE = 12'hf00;
    localparam COLOR_GREEN = 12'h0f0;
@@ -38,17 +37,17 @@
               NUM_VERTICAL_VISIBLE_PIXELS + NUM_VERTICAL_FRONT_PORCH_PIXELS +
               NUM_VERTICAL_SYNC_PIXELS + NUM_VERTICAL_BACK_PORCH_PIXELS;
 
-   reg [CORDW-1:0] horizontal_counter_reg, horizontal_counter_next;
-   reg [CORDW-1:0] vertical_counter_reg, vertical_counter_next;
+   logic signed [CORDW-1:0] horizontal_counter_reg, horizontal_counter_next;
+   logic signed [CORDW-1:0] vertical_counter_reg, vertical_counter_next;
 
-   reg             h_sync_reg, h_sync_next;
-   reg             v_sync_reg, v_sync_next;
+   logic                    h_sync_reg, h_sync_next;
+   logic                    v_sync_reg, v_sync_next;
 
-   reg             is_displaying_pixels;
+   logic                    is_displaying_pixels;
 
    // Lazy fix
-   reg             r_frame;
-   reg             r_line;
+   logic                    r_frame;
+   logic                    r_line;
 
 
    always @ (posedge clk_pix)
@@ -67,7 +66,7 @@
         end
      end
 
-   always @ (*)
+   always_comb
      begin
         horizontal_counter_next = horizontal_counter_reg;
         vertical_counter_next = vertical_counter_reg;
@@ -106,7 +105,7 @@
      end
 
 
-   always @ (*)
+   always_comb
      begin
         h_sync_next = h_sync_reg;
         v_sync_next = v_sync_reg;
@@ -135,7 +134,7 @@
      end
 
 
-   always @ (*)
+   always_comb
      begin
         is_displaying_pixels = 0;
         if (horizontal_counter_reg < NUM_HORIZONTAL_VISIBLE_PIXELS && vertical_counter_reg < NUM_VERTICAL_VISIBLE_PIXELS) begin
@@ -147,8 +146,6 @@
 
    always_ff @(posedge clk_pix) begin
 
-
-      // Need to edit above code to differ from frame and display enable
       frame <= r_frame;
       line <= r_line;
       de <= is_displaying_pixels;

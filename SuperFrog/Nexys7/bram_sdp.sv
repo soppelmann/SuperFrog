@@ -9,13 +9,13 @@ module bram_sdp #(
     parameter INIT_F="",
     localparam ADDRW=$clog2(DEPTH)
     ) (
-    input wire logic clk_write,               // write clock (port a)
-    input wire logic clk_read,                // read clock (port b)
-    input wire logic we,                      // write enable (port a)
-    input wire logic [ADDRW-1:0] addr_write,  // write address (port a)
-    input wire logic [ADDRW-1:0] addr_read,   // read address (port b)
-    input wire logic [WIDTH-1:0] data_in,     // data in (port a)
-    output     logic [WIDTH-1:0] data_out     // data out (port b)
+    input logic clk_write,               // write clock (port a)
+    input logic clk_read,                // read clock (port b)
+    input logic we,                      // write enable (port a)
+    input logic [ADDRW-1:0] addr_write,  // write address (port a)
+    input logic [ADDRW-1:0] addr_read,   // read address (port b)
+    input logic [WIDTH-1:0] data_in,     // data in (port a)
+    output logic [WIDTH-1:0] data_out     // data out (port b)
        );
 
    logic [WIDTH-1:0] memory [DEPTH];

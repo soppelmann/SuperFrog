@@ -8,13 +8,13 @@ module clut_simple #(
     parameter CIDXW=4,   // colour index width (bits)
     parameter F_PAL=""   // init file for colour palette
     ) (
-    input  wire logic clk_write,  // write clock
-    input  wire logic clk_read,   // read clock
-    input  wire logic we,         // write enable
-    input  wire logic [CIDXW-1:0] cidx_write,  // colour index to write
-    input  wire logic [CIDXW-1:0] cidx_read,   // colour index to read
-    input  wire logic [COLRW-1:0] colr_in,     // write colour
-    output      logic [COLRW-1:0] colr_out     // read colour
+    input  logic clk_write,  // write clock
+    input  logic clk_read,   // read clock
+    input  logic we,         // write enable
+    input  logic [CIDXW-1:0] cidx_write,  // colour index to write
+    input  logic [CIDXW-1:0] cidx_read,   // colour index to read
+    input  logic [COLRW-1:0] colr_in,     // write colour
+    output logic [COLRW-1:0] colr_out     // read colour
     );
 
     bram_sdp #(

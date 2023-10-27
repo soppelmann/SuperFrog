@@ -17,8 +17,8 @@ module display_480p #(
     H_POL=0,     // horizontal sync polarity (0:neg, 1:pos)
     V_POL=0      // vertical sync polarity (0:neg, 1:pos)
     ) (
-    input  wire logic clk_pix,  // pixel clock
-    input  wire logic rst_pix,  // reset in pixel clock domain
+    input       logic clk_pix,  // pixel clock
+    input       logic rst_pix,  // reset in pixel clock domain
     output      logic hsync,    // horizontal sync
     output      logic vsync,    // vertical sync
     output      logic de,       // data enable (low in blanking interval)

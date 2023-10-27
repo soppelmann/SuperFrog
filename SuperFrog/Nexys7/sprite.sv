@@ -4,35 +4,35 @@
 `timescale 1ns / 1ps
 
 module sprite #(
-    parameter CORDW=16,      // signed coordinate width (bits)
-    parameter H_RES=640,     // horizontal screen resolution (pixels)
-    parameter SX_OFFS=2,     // horizontal screen offset (pixels)
-    parameter SPR_FILE="",   // sprite bitmap file ($readmemh format)
-    parameter SPR_WIDTH=8,   // sprite bitmap width in pixels
-    parameter SPR_HEIGHT=8,  // sprite bitmap height in pixels
-    parameter SPR_SCALE=0,   // scale factor: 0=1x, 1=2x, 2=4x, 3=8x etc.
-    parameter SPR_DATAW=1    // data width: bits per pixel
-    ) (
-    input  wire logic clk,                            // clock
-    input  wire logic rst,                            // reset
-    input  wire logic line,                           // start of active screen line
-    input  wire logic signed [CORDW-1:0] sx, sy,      // screen position
-    input  wire logic signed [CORDW-1:0] sprx, spry,  // sprite position
-    output      logic [SPR_DATAW-1:0] pix,            // pixel colour index
-    output      logic drawing                         // drawing at position (sx,sy)
-       );
+                parameter CORDW=16,     // signed coordinate width (bits)
+                parameter H_RES=640,    // horizontal screen resolution (pixels)
+                parameter SX_OFFS=2,    // horizontal screen offset (pixels)
+                parameter SPR_FILE="",  // sprite bitmap file ($readmemh format)
+                parameter SPR_WIDTH=8,  // sprite bitmap width in pixels
+                parameter SPR_HEIGHT=8, // sprite bitmap height in pixels
+                parameter SPR_SCALE=0,  // scale factor: 0=1x, 1=2x, 2=4x, 3=8x etc.
+                parameter SPR_DATAW=1   // data width: bits per pixel
+                ) (
+                   input logic                    clk,        // clock
+                   input logic                    rst,        // reset
+                   input logic                    line,       // start of active screen line
+                   input logic signed [CORDW-1:0] sx, sy,     // screen position
+                   input logic signed [CORDW-1:0] sprx, spry, // sprite position
+                   output logic [SPR_DATAW-1:0]   pix,        // pixel colour index
+                   output logic                   drawing     // drawing at position (sx,sy)
+                   );
 
    // sprite bitmap ROM
    localparam SPR_ROM_DEPTH = SPR_WIDTH * SPR_HEIGHT;
    logic [$clog2(SPR_ROM_DEPTH)-1:0] spr_rom_addr;  // pixel position
    logic [SPR_DATAW-1:0]             spr_rom_data;  // pixel colour
    rom_async #(
-                .WIDTH(SPR_DATAW),
-                .DEPTH(SPR_ROM_DEPTH),
-                .INIT_F(SPR_FILE)
-                ) spr_rom (
-                          .addr(spr_rom_addr),
-                          .data(spr_rom_data)
+               .WIDTH  (SPR_DATAW),
+               .DEPTH  (SPR_ROM_DEPTH),
+               .INIT_F (SPR_FILE)
+               ) spr_rom (
+                          .addr (spr_rom_addr),
+                          .data (spr_rom_data)
                           );
 
    // horizontal coordinate within sprite bitmap
@@ -61,13 +61,13 @@ module sprite #(
    end
 
    // sprite state machine
-   enum {
-          IDLE,      // awaiting line signal
-          REG_POS,   // register sprite position
-          ACTIVE,    // check if sprite is active on this line
-          WAIT_POS,  // wait for horizontal sprite position
-          SPR_LINE,  // iterate over sprite pixels
-          WAIT_DATA  // account for data latency
+   enum logic [3:0] {
+         IDLE,      // awaiting line signal
+         REG_POS,   // register sprite position
+         ACTIVE,    // check if sprite is active on this line
+         WAIT_POS,  // wait for horizontal sprite position
+         SPR_LINE,  // iterate over sprite pixels
+         WAIT_DATA  // account for data latency
          } state;
 
    always_ff @(posedge clk) begin

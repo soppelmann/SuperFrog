@@ -9,7 +9,7 @@ module rom_async #(
     parameter INIT_F="",
     localparam ADDRW=$clog2(DEPTH)
     ) (
-    input wire logic [ADDRW-1:0] addr,
+    input      logic [ADDRW-1:0] addr,
     output     logic [WIDTH-1:0] data
     );
 
