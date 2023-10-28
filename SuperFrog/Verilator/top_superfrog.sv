@@ -39,20 +39,13 @@
                                                );
 
 
-   // 9-bit LFSR
+   // Setup LFSR (Linear-Feedback Shift Register)
+   // 9-bit LFSR, easy to put into module
    logic [8:0] sreg = 0;
-
-   lfsr #(
-          .LEN  (9),
-          .TAPS (9'b101110010)
-          ) lsfr_sf (
-                     .clk  (clk_pix),
-                     .rst  (rst_pix),
-                     .en   (de),
-                     .seed (0),  // use default seed
-                     .sreg (sreg)
-                     );
-
+   always_ff @(posedge clk_pix) begin
+      if (de)  sreg <= {1'b0, sreg[8:1]} ^ (sreg[0] ? 9'b101110010 : {9{1'b0}}); //LFSR
+      if (rst_pix) sreg <= (0 != 0) ? 0 : {9{1'b1}}; // Start seed
+   end
 
    logic signed [CORDW-1:0] h_sprx, h_spry;  // draw sprite at position (sprx,spry)
 

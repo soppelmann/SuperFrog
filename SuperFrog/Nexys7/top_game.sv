@@ -54,27 +54,12 @@ module top_superfrog (
                                                 );
 
    // Setup LFSR (Linear-Feedback Shift Register)
-   //    reg [7:0] sreg;
-   //    always_ff @(posedge clk_pix) begin
-   //    if (btn_up) sreg <= {1'b0, sreg[7:1]} ^ (sreg[0] ? 8'b10111000 : 8'b0);
-   //    if (rst_pix) sreg <= 8'b10111000;
-   //    end
-
-
    // 9-bit LFSR
-   logic [8:0] sreg;
-
-   lfsr #(
-          .LEN  (9),
-          .TAPS (9'b101110010)
-          ) lsfr_sf (
-                     .clk  (clk_pix),
-                     .rst  (rst_pix),
-                     .en   (de),
-                     .seed (0),  // use default seed
-                     .sreg (sreg)
-                     );
-
+   logic [8:0] sreg = 0;
+   always_ff @(posedge clk_pix) begin
+      if (de)  sreg <= {1'b0, sreg[8:1]} ^ (sreg[0] ? 9'b101110010 : {9{1'b0}}); //LFSR
+      if (rst_pix) sreg <= (0 != 0) ? 0 : {9{1'b1}}; // Start seed
+   end
 
    logic signed [CORDW-1:0] h_sprx, h_spry;  // draw sprite at position (sprx,spry)
 
