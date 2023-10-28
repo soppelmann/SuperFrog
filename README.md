@@ -76,5 +76,6 @@ All you need to do is provide a thin C++ wrapper that calls these classes to per
 
 ### Todo
 
-- Add game of life project
+- Add game of life project.o
 - Have everything scale according to resolution parameter in header file.
+- Get rid of redundant localparams.

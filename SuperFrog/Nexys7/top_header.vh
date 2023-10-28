@@ -2,7 +2,7 @@
     // HEDGEHOG
     localparam H_CORDW = 16;  // signed coordinate width (bits)
 
-        // screen dimensions (must match display_inst)
+    // screen dimensions (must match display_inst)
     localparam H_RES = 640;
 
     // colour parameters
@@ -27,9 +27,6 @@
     // Meteors
     localparam F_CORDW = 16;  // signed coordinate width (bits)
 
-    // screen dimensions (must match display_inst)
-    localparam F_H_RES = 640;
-
     // colour parameters
     localparam F_CHANW = 4;         // colour channel width (bits)
     localparam F_COLRW = 3*F_CHANW;   // colour width: three channels (bits)
@@ -49,8 +46,6 @@
     // FROG
 
 
-    // screen dimensions (must match display_inst)
-    //localparam H_RES = 640;
     localparam CORDW = 16;  // signed coordinate width (bits)
     // colour parameters
     localparam CHANW = 4;         // colour channel width (bits)

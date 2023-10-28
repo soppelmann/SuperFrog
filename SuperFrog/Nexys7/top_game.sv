@@ -153,7 +153,7 @@ module top_superfrog (
    generate for (m = 0; m < SPR_CNT; m = m + 1) begin : sprite_gen
       sprite #(
                .CORDW      (F_CORDW),
-               .H_RES      (F_H_RES),
+               .H_RES      (H_RES),
                .SX_OFFS    (F_SX_OFFS),
                .SPR_FILE   (F_SPR_FILE),
                .SPR_WIDTH  (F_SPR_WIDTH),

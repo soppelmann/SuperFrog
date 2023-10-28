@@ -1,5 +1,4 @@
 // (C)2023 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/hardware-sprites/
 
 `timescale 1ns / 1ps
 
