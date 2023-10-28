@@ -77,3 +77,4 @@ All you need to do is provide a thin C++ wrapper that calls these classes to per
 ### Todo
 
 - Add game of life project
+- Have everything scale according to resolution parameter in header file.
