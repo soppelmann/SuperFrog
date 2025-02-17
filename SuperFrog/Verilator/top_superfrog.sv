@@ -1,20 +1,20 @@
 `timescale 1ns / 1ps
 
-  module top_superfrog (
-                        input logic                     clk_pix,   // pixel clock
-                        input logic                     rst_pix,   // sim reset
-                        output logic signed [CORDW-1:0] sdl_sx,    // horizontal SDL position
-                        output logic signed [CORDW-1:0] sdl_sy,    // vertical SDL position
-                        output logic                    sdl_de,    // data enable (low in blanking interval)
-                        output logic                    sdl_frame, // high at start of frame
-                        output logic [7:0]              sdl_r,     // 8-bit red
-                        output logic [7:0]              sdl_g,     // 8-bit green
-                        output logic [7:0]              sdl_b,     // 8-bit blue
-                        input logic                     btn_rst_n, // reset button
-                        input logic                     btn_right,
-                        input logic                     btn_left,
-                        input logic                     btn_up
-                        );
+module top_superfrog (
+    input  logic                    clk_pix,    // pixel clock
+    input  logic                    rst_pix,    // sim reset
+    output logic signed [CORDW-1:0] sdl_sx,     // horizontal SDL position
+    output logic signed [CORDW-1:0] sdl_sy,     // vertical SDL position
+    output logic                    sdl_de,     // data enable (low in blanking interval)
+    output logic                    sdl_frame,  // high at start of frame
+    output logic        [      7:0] sdl_r,      // 8-bit red
+    output logic        [      7:0] sdl_g,      // 8-bit green
+    output logic        [      7:0] sdl_b,      // 8-bit blue
+    input  logic                    btn_rst_n,  // reset button
+    input  logic                    btn_right,
+    input  logic                    btn_left,
+    input  logic                    btn_up
+);
 
    // Header file with our localparams
    `include "top_header.svh"
@@ -23,27 +23,29 @@
    logic de, frame, line;
 
    // Small glitches at edge of display, use display_480p to avoid glitches :)
-   simple_480p #(.CORDW (CORDW)) display_inst (
-                                               .clk_pix,
-                                               .rst_pix,
-                                               .sx,
-                                               .sy,
-                                               /* verilator lint_off PINCONNECTEMPTY */
-                                               .hsync (),
-                                               .vsync (),
-                                               /* verilator lint_on PINCONNECTEMPTY */
-                                               .de,
-                                               .frame,
-                                               .line
-                                               );
+   simple_480p #(
+       .CORDW(CORDW)
+   ) display_inst (
+       .clk_pix,
+       .rst_pix,
+       .sx,
+       .sy,
+       /* verilator lint_off PINCONNECTEMPTY */
+       .hsync(),
+       .vsync(),
+       /* verilator lint_on PINCONNECTEMPTY */
+       .de,
+       .frame,
+       .line
+   );
 
 
    // Setup LFSR (Linear-Feedback Shift Register)
    // 9-bit LFSR, easy to put into module
    logic [8:0] sreg = 0;
    always_ff @(posedge clk_pix) begin
-      if (de)  sreg <= {1'b0, sreg[8:1]} ^ (sreg[0] ? 9'b101110010 : {9{1'b0}}); //LFSR
-      if (rst_pix) sreg <= (0 != 0) ? 0 : {9{1'b1}}; // Start seed
+      if (de) sreg <= {1'b0, sreg[8:1]} ^ (sreg[0] ? 9'b101110010 : {9{1'b0}});  //LFSR
+      if (rst_pix) sreg <= (0 != 0) ? 0 : {9{1'b1}};  // Start seed
    end
 
    logic signed [CORDW-1:0] h_sprx, h_spry;  // draw sprite at position (sprx,spry)
@@ -63,53 +65,53 @@
    logic h_drawing;  // drawing at (sx,sy)
    logic [H_CIDXW-1:0] h_spr_pix_indx;  // pixel colour index
    sprite #(
-            .CORDW      (H_CORDW),
-            .H_RES      (H_RES),
-            .SX_OFFS    (H_SX_OFFS),
-            .SPR_FILE   (H_SPR_FILE),
-            .SPR_WIDTH  (H_SPR_WIDTH),
-            .SPR_HEIGHT (H_SPR_HEIGHT),
-            .SPR_SCALE  (H_SPR_SCALE),
-            .SPR_DATAW  (H_CIDXW)
-            ) sprite_hedgehog (
-                               .clk     (clk_pix),
-                               .rst     (rst_pix),
-                               .line,
-                               .sx,
-                               .sy,
-                               .sprx    (h_sprx),
-                               .spry    (h_spry),
-                               .pix     (h_spr_pix_indx),
-                               .drawing (h_drawing)
-                               );
+       .CORDW     (H_CORDW),
+       .H_RES     (H_RES),
+       .SX_OFFS   (H_SX_OFFS),
+       .SPR_FILE  (H_SPR_FILE),
+       .SPR_WIDTH (H_SPR_WIDTH),
+       .SPR_HEIGHT(H_SPR_HEIGHT),
+       .SPR_SCALE (H_SPR_SCALE),
+       .SPR_DATAW (H_CIDXW)
+   ) sprite_hedgehog (
+       .clk    (clk_pix),
+       .rst    (rst_pix),
+       .line,
+       .sx,
+       .sy,
+       .sprx   (h_sprx),
+       .spry   (h_spry),
+       .pix    (h_spr_pix_indx),
+       .drawing(h_drawing)
+   );
 
    // colour lookup table
    logic [H_COLRW-1:0] h_spr_pix_colr;
    clut_simple #(
-                 .COLRW (H_COLRW),
-                 .CIDXW (H_CIDXW),
-                 .F_PAL (H_PAL_FILE)
-                 ) h_clut_instance (
-                                    .clk_write  (clk_pix),
-                                    .clk_read   (clk_pix),
-                                    .we         (0),
-                                    .cidx_write (0),
-                                    .cidx_read  (h_spr_pix_indx),
-                                    .colr_in    (0),
-                                    .colr_out   (h_spr_pix_colr)
-                                    );
+       .COLRW(H_COLRW),
+       .CIDXW(H_CIDXW),
+       .F_PAL(H_PAL_FILE)
+   ) h_clut_instance (
+       .clk_write (clk_pix),
+       .clk_read  (clk_pix),
+       .we        (0),
+       .cidx_write(0),
+       .cidx_read (h_spr_pix_indx),
+       .colr_in   (0),
+       .colr_out  (h_spr_pix_colr)
+   );
 
    //END HEDGEHOG
 
    // BEGIN METEORS
 
    // # of sprites
-   localparam SPR_CNT = 5;      // number of meteors
+   localparam SPR_CNT = 5;  // number of meteors
 
-   logic signed [F_CORDW-1:0] f_spr_x [SPR_CNT];
-   logic signed [F_CORDW-1:0] f_spr_y [SPR_CNT];
-   logic signed [F_CORDW-1:0] init_f_spr_x [SPR_CNT];
-   logic signed [F_CORDW-1:0] init_f_spr_y [SPR_CNT];
+   logic signed [F_CORDW-1:0] f_spr_x[SPR_CNT];
+   logic signed [F_CORDW-1:0] f_spr_y[SPR_CNT];
+   logic signed [F_CORDW-1:0] init_f_spr_x[SPR_CNT];
+   logic signed [F_CORDW-1:0] init_f_spr_y[SPR_CNT];
 
    // Initial coordinates for meteors
    initial begin
@@ -133,43 +135,45 @@
 
    logic [F_COLRW-1:0] f_spr_pix_colr[SPR_CNT];
 
-   genvar              m;  // for looping over sprite instances (5)
-   generate for (m = 0; m < SPR_CNT; m = m + 1) begin : sprite_gen
-      sprite #(
-               .CORDW      (F_CORDW),
-               .H_RES      (H_RES),
-               .SX_OFFS    (F_SX_OFFS),
-               .SPR_FILE   (F_SPR_FILE),
-               .SPR_WIDTH  (F_SPR_WIDTH),
-               .SPR_HEIGHT (F_SPR_HEIGHT),
-               .SPR_SCALE  (F_SPR_SCALE),
-               .SPR_DATAW  (F_CIDXW)
-               ) sprite_fall (
-                              .clk     (clk_pix),
-                              .rst     (rst_pix),
-                              .line,
-                              .sx,
-                              .sy,
-                              .sprx    (f_spr_x[m]),
-                              .spry    (f_spr_y[m]),
-                              .pix     (f_spr_pix_indx[m]),
-                              .drawing (f_drawing[m])
-                              );
+   genvar m;  // for looping over sprite instances (5)
+   generate
+      for (m = 0; m < SPR_CNT; m = m + 1) begin : sprite_gen
+         sprite #(
+             .CORDW     (F_CORDW),
+             .H_RES     (H_RES),
+             .SX_OFFS   (F_SX_OFFS),
+             .SPR_FILE  (F_SPR_FILE),
+             .SPR_WIDTH (F_SPR_WIDTH),
+             .SPR_HEIGHT(F_SPR_HEIGHT),
+             .SPR_SCALE (F_SPR_SCALE),
+             .SPR_DATAW (F_CIDXW)
+         ) sprite_fall (
+             .clk    (clk_pix),
+             .rst    (rst_pix),
+             .line,
+             .sx,
+             .sy,
+             .sprx   (f_spr_x[m]),
+             .spry   (f_spr_y[m]),
+             .pix    (f_spr_pix_indx[m]),
+             .drawing(f_drawing[m])
+         );
 
-      clut_simple #(
-                    .COLRW (F_COLRW),
-                    .CIDXW (F_CIDXW),
-                    .F_PAL (F_PAL_FILE)
-                    ) f_clut_instance (
-                                       .clk_write  (clk_pix),
-                                       .clk_read   (clk_pix),
-                                       .we         (0),
-                                       .cidx_write (0),
-                                       .cidx_read  (f_spr_pix_indx[m]),
-                                       .colr_in    (0),
-                                       .colr_out   (f_spr_pix_colr[m])
-                                       );
-   end endgenerate
+         clut_simple #(
+             .COLRW(F_COLRW),
+             .CIDXW(F_CIDXW),
+             .F_PAL(F_PAL_FILE)
+         ) f_clut_instance (
+             .clk_write (clk_pix),
+             .clk_read  (clk_pix),
+             .we        (0),
+             .cidx_write(0),
+             .cidx_read (f_spr_pix_indx[m]),
+             .colr_in   (0),
+             .colr_out  (f_spr_pix_colr[m])
+         );
+      end
+   endgenerate
 
 
    // In game counters
@@ -179,8 +183,12 @@
    for (m = 0; m < SPR_CNT; m = m + 1) begin : fall_gen
       always_ff @(posedge clk_pix) begin
          if (frame) begin
-            if (f_spr_y[m] > 230) begin f_spr_y[m] <= -300; f_spr_x[m][8:0] <= sreg; end  // move back to top of screen
-            else f_spr_y[m] <= f_spr_y[m] + F_SPR_SPX;  // otherwise keep moving down
+            if (f_spr_y[m] > 230) begin
+               f_spr_y[m] <= -300;
+               f_spr_x[m][8:0] <= sreg;
+            end  // move back to top of screen
+            else
+               f_spr_y[m] <= f_spr_y[m] + F_SPR_SPX;  // otherwise keep moving down
          end
          if (rst_pix) begin
             f_spr_x[m] <= init_f_spr_x[m];
@@ -197,7 +205,7 @@
 
    always_ff @(posedge clk_pix) begin
 
-      if(btn_up && spry == 245) begin
+      if (btn_up && spry == 245) begin
          flying <= 1;
       end else if (spry < 180) begin
          flying <= 0;
@@ -210,61 +218,60 @@
          if (dead) spry <= spry + 1;
          else if (sprx < -SPR_DRAWW) sprx <= H_RES;  // move back to right of screen
          else if (sprx > H_RES) sprx <= -SPR_DRAWW;  // move back to right of screen
-         else if(btn_right) sprx <= sprx + SPR_SPX;
-         else if(btn_left) sprx <= sprx - SPR_SPX;
+         else if (btn_right) sprx <= sprx + SPR_SPX;
+         else if (btn_left) sprx <= sprx - SPR_SPX;
          else sprx <= sprx;  // otherwise keep moving left
 
-         if(flying == 1) begin
+         if (flying == 1) begin
             spry <= spry - 2;
-         end
-         else if (spry < 245 && !flying) begin
+         end else if (spry < 245 && !flying) begin
             spry <= spry + 1;
          end
 
       end
       if (rst_pix) begin  // start off screen and level with grass
-         sprx <= 120; //H_RES / 2
+         sprx <= 120;  //H_RES / 2
          spry <= 245;
       end
    end
 
    logic [CIDXW-1:0] spr_pix_indx;  // pixel colour index
    sprite #(
-            .CORDW      (CORDW),
-            .H_RES      (H_RES),
-            .SX_OFFS    (SX_OFFS),
-            .SPR_FILE   (SPR_FILE),
-            .SPR_WIDTH  (SPR_WIDTH),
-            .SPR_HEIGHT (SPR_HEIGHT),
-            .SPR_SCALE  (SPR_SCALE),
-            .SPR_DATAW  (CIDXW)
-            ) sprite_superfrog (
-                                .clk (clk_pix),
-                                .rst (rst_pix),
-                                .line,
-                                .sx,
-                                .sy,
-                                .sprx,
-                                .spry,
-                                .pix (spr_pix_indx),
-                                .drawing
-                                );
+       .CORDW     (CORDW),
+       .H_RES     (H_RES),
+       .SX_OFFS   (SX_OFFS),
+       .SPR_FILE  (SPR_FILE),
+       .SPR_WIDTH (SPR_WIDTH),
+       .SPR_HEIGHT(SPR_HEIGHT),
+       .SPR_SCALE (SPR_SCALE),
+       .SPR_DATAW (CIDXW)
+   ) sprite_superfrog (
+       .clk(clk_pix),
+       .rst(rst_pix),
+       .line,
+       .sx,
+       .sy,
+       .sprx,
+       .spry,
+       .pix(spr_pix_indx),
+       .drawing
+   );
 
    // colour lookup table, map numbers to colors
    logic [COLRW-1:0] spr_pix_colr;
    clut_simple #(
-                 .COLRW (COLRW),
-                 .CIDXW (CIDXW),
-                 .F_PAL (PAL_FILE)
-                 ) clut_instance (
-                                  .clk_write  (clk_pix),
-                                  .clk_read   (clk_pix),
-                                  .we         (0),
-                                  .cidx_write (0),
-                                  .cidx_read  (spr_pix_indx),
-                                  .colr_in    (0),
-                                  .colr_out   (spr_pix_colr)
-                                  );
+       .COLRW(COLRW),
+       .CIDXW(CIDXW),
+       .F_PAL(PAL_FILE)
+   ) clut_instance (
+       .clk_write (clk_pix),
+       .clk_read  (clk_pix),
+       .we        (0),
+       .cidx_write(0),
+       .cidx_read (spr_pix_indx),
+       .colr_in   (0),
+       .colr_out  (spr_pix_colr)
+   );
 
    logic drawing;  // drawing frog at (sx,sy)
 
@@ -276,7 +283,8 @@
    // Meteor
    logic f_drawing_t1[SPR_CNT];
    for (m = 0; m < SPR_CNT; m = m + 1) begin : draw_gen
-      always_ff @(posedge clk_pix) f_drawing_t1[m] <= f_drawing[m] && (f_spr_pix_indx[m] != F_TRANS_INDX);
+      always_ff @(posedge clk_pix)
+         f_drawing_t1[m] <= f_drawing[m] && (f_spr_pix_indx[m] != F_TRANS_INDX);
    end
 
    // Hedgehog
@@ -302,8 +310,8 @@
    logic [COLRW-1:0] bg_colr;
    always_ff @(posedge clk_pix) begin
       if (line) begin
-         if      (sy == 0)   bg_colr <= 'h239;
-         else if (sy == 80)  bg_colr <= 'h24A;
+         if (sy == 0) bg_colr <= 'h239;
+         else if (sy == 80) bg_colr <= 'h24A;
          else if (sy == 140) bg_colr <= 'h25B;
          else if (sy == 190) bg_colr <= 'h26C;
          else if (sy == 230) bg_colr <= 'h27D;
