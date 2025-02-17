@@ -17,8 +17,7 @@
                         );
 
    // Header file with our localparams
-   `include "top_header.vh"
-
+   `include "top_header.svh"
    // display sync signals and coordinates
    logic signed [CORDW-1:0] sx, sy;
    logic de, frame, line;
@@ -134,12 +133,11 @@
 
    logic [F_COLRW-1:0] f_spr_pix_colr[SPR_CNT];
 
-
    genvar              m;  // for looping over sprite instances (5)
    generate for (m = 0; m < SPR_CNT; m = m + 1) begin : sprite_gen
       sprite #(
                .CORDW      (F_CORDW),
-               .H_RES      (F_H_RES),
+               .H_RES      (H_RES),
                .SX_OFFS    (F_SX_OFFS),
                .SPR_FILE   (F_SPR_FILE),
                .SPR_WIDTH  (F_SPR_WIDTH),
