@@ -1,4 +1,3 @@
-
 `timescale 1ns / 1ps
 
 module top_superfrog (
@@ -18,8 +17,7 @@ module top_superfrog (
                       );
 
    // Header file with our localparams
-`include "top_header.vh"
-
+`include "top_header.svh"
    // generate pixel clock, uncomment for simulator
    logic clk_pix;
    logic clk_pix_locked;
@@ -52,6 +50,7 @@ module top_superfrog (
                                                 .frame,
                                                 .line
                                                 );
+
 
    // Setup LFSR (Linear-Feedback Shift Register)
    // 9-bit LFSR
