@@ -1,6 +1,8 @@
 # SuperFrog
 VGA lab for EITF35
 
+Based on https://projectf.io/posts/hardware-sprites/ with more features and new vga driver
+
 ![Screenshot](./examples/Simulator.jpeg)
 
 ## Requirements
